@@ -10,6 +10,7 @@ def check_system():
     ram = "OK" if psutil.virtual_memory().total >= 4 * 1024 * 1024 * 1024 else "FAIL"
     disk = "OK" if psutil.disk_usage('/').total >= 60 * 1024 * 1024 * 1024 else "FAIL"
     result_label.config(text=f"Sistema Operacional: {os_type}\nVersão do Sistema: {os_version}\nRAM: {psutil.virtual_memory().total / (1024 * 1024 * 1024):.2f} GB\nDisco: {disk}")
+    status_var.set("System check complete.")
     if ram == "OK" and disk == "OK" and os_version == "OK":
         result_label.config(fg="green", font=bold_font)
     else:
@@ -38,19 +39,29 @@ def optimize_mysql():
 
 
 
+
 root = tk.Tk()
-root.geometry("400x250")
+root.geometry("500x300")
 root.title("Checar sistema")
 
 bold_font = font.Font(family="Helvetica", size=12, weight="bold")
+default_font = font.Font(family="Helvetica", size=10)
 
-check_button = tk.Button(root, text="VALIDAR", font=bold_font, command=check_system)
-check_button.pack(pady=10)
+frame_buttons = tk.Frame(root)
+frame_buttons.pack(pady=20)
 
-optimize_button = tk.Button(root, text="OTIMIZAR my.ini", font=bold_font, command=optimize_mysql)
-optimize_button.pack(pady=10)
+check_button = tk.Button(frame_buttons, text="VALIDAR", font=bold_font, command=check_system)
+check_button.pack(side="left", padx=10)
 
-result_label = tk.Label(root, text="", font=bold_font)
-result_label.pack()
+optimize_button = tk.Button(frame_buttons, text="OTIMIZAR my.ini", font=bold_font, command=optimize_mysql)
+optimize_button.pack(side="left", padx=10)
+
+result_label = tk.Label(root, text="", font=default_font)
+result_label.pack(pady=20)
+
+status_var = tk.StringVar()
+status_var.set("Ready.")
+status_bar = tk.Label(root, textvariable=status_var, bd=1, relief="sunken", anchor="w")
+status_bar.pack(side="bottom", fill="x")
 
 root.mainloop()
